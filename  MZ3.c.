@@ -1,0 +1,35 @@
+#include <stdio.h>
+enum width {CL_SHIFT = 0x6, FO_SHIFT = 0x1A, RS_LSHIFT = 0x6, RS_RSHIFT = 0x1B, RT_RSHIFT = 0x1B, RT_LSHIFT = 0xB, 
+IM_SHIFT = 0x10, RD_LSHIFT = 0x10, RD_RSHIFT = 0x1B};
+enum cases {CASE_ADD = 0x20, CASE_SUB = 0x22, CASE_MULT = 0x18, CASE_DIV = 0x1A, CASE_ADDI = 0x08, CASE_ANDI = 0x0C, CASE_ORI = 0x0D};
+int main()
+{
+    int rs, rt, rd, immediate, is_I = 0, is_MD = 0, funct_op;
+    unsigned int comm_line;
+    scanf("%d", &comm_line);
+    
+    if (((comm_line << CL_SHIFT) >> CL_SHIFT) != comm_line) is_I++;
+    if (!is_I) funct_op = ((comm_line << FO_SHIFT) >> FO_SHIFT); else funct_op = (comm_line >> FO_SHIFT);
+
+    switch(funct_op)
+    {
+           case CASE_ADD: {printf("add "); break;}
+		case CASE_SUB: {printf("sub "); break;}
+		case CASE_MULT: {printf("mult "); is_MD++; break;}
+		case CASE_DIV: {printf("div "); is_MD++; break;}
+		case CASE_ADDI: {printf("addi "); break;}
+		case CASE_ANDI: {printf("andi "); break;}
+		case CASE_ORI: {printf("ori "); break;}
+    }
+    
+    rs = ((comm_line << RS_LSHIFT) >> RS_RSHIFT);
+    rt = ((comm_line << RT_LSHIFT) >> RT_RSHIFT);
+
+    
+    if (is_I) immediate = (comm_line << IM_SHIFT) >> IM_SHIFT; else rd = (comm_line << RD_LSHIFT) >> RD_RSHIFT;
+
+if (is_I) printf ("$%u, $%u, %d", rt, rs, immediate); else if (!is_MD) printf("$%u, $%u, $%u", rd, rs, rt);
+else printf("$%u, $%u", rs, rt);
+
+return 0;
+}
